@@ -1,5 +1,5 @@
 //
-//  4773_토마토_초등.cpp
+//  4773_토마토_초등.cpp
 //  codeup
 //
 //  Created by Yongduek Seo on 4/5/18.
