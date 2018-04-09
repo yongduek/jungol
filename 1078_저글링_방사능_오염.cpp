@@ -15,6 +15,9 @@ using namespace std;
 int board[100][100];
 int W, H;
 
+const int dx[] = { 0,  0,  +1,  -1 };
+const int dy[] = { +1, -1,  0,  0 };
+
 void pr(int ktime) {
     printf ("--- ktime: %d ---\n", ktime);
     for (int i = 0; i < H; i++) {
@@ -33,11 +36,10 @@ bool inside (p2 xy) {
 }
 void kill_j(int& ktime, int& krest, int x, int y)
 {
-    ktime = 3;
+    ktime = 2;
     
     queue<p2> q;
     q.push (p2{x,y});
-    board[y][x] = ktime;
     
     while (!q.empty()) {
         ktime++;
@@ -46,17 +48,21 @@ void kill_j(int& ktime, int& krest, int x, int y)
         
         for (auto n = 0; n < nq; n++) {
             p2 xy = q.front(); q.pop();
-            
-            if (!inside(xy)) continue;
-            // for each neighborhood, check and push
-            
             if (board[xy.y][xy.x] == 1) {
-                board[xy.y][xy.x] = ktime; // it will be dead in curr_time+1 seconds.
-                q.push (p2{x-1,y}); q.push (p2{x+1,y}); q.push (p2{x,y-1}); q.push (p2{x,y+1}); // 주변으로 전염.
+                board[xy.y][xy.x] = ktime;
+                // check its neighbor
+                for (int i = 0; i < 4; i++)
+                    if (inside(p2{xy.x+dx[i], xy.y+dy[i]})) {
+                        q.push (p2{xy.x+dx[i], xy.y+dy[i]});
+                    }
             }
+            else //if (board[xy.y][xy.x] == 0 || board[xy.y][xy.x] == -1)
+                continue;
         }
-        pr(ktime-1);
+        //pr(ktime);
     }
+    
+    ktime--; // it is one more than the time.
     
     krest = 0;
     for (int i = 0; i < H; i++)
